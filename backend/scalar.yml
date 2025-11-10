@@ -1,0 +1,254 @@
+openapi: 3.1.0
+info:
+  title: API Municipalidad Yauyos
+  description: >
+    Backend documentado para el sistema municipal con auditoría, licencias,
+    inspecciones, documentos, notificaciones, contribuciones y predicciones ML.
+    Autenticación mediante **JWT Bearer**.
+  version: 1.0.0
+  contact:
+    name: Equipo de Desarrollo - Municipalidad Yauyos
+    email: soporte@municipalidadyauyos.gob.pe
+
+servers:
+  - url: http://localhost:4000/api
+    description: Servidor local de desarrollo
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id_usuario: { type: integer, example: 1 }
+        nombre: { type: string, example: "Carlos Hernández" }
+        correo: { type: string, example: "carlos@senati.edu.pe" }
+        rol_nombre: { type: string, example: "Administrador" }
+        activo: { type: boolean, example: true }
+
+    Licencia:
+      type: object
+      properties:
+        id_licencia: { type: integer, example: 10 }
+        tipo_licencia: { type: string, example: "Comercio" }
+        estado: { type: string, example: "Aprobada" }
+        fecha_solicitud: { type: string, format: date, example: "2025-02-15" }
+        id_usuario: { type: integer, example: 1 }
+
+    Inspeccion:
+      type: object
+      properties:
+        id_inspeccion: { type: integer, example: 25 }
+        id_licencia: { type: integer, example: 10 }
+        id_inspector: { type: integer, example: 3 }
+        fecha_inspeccion: { type: string, format: date, example: "2025-03-12" }
+        estado: { type: string, example: "Pendiente" }
+        observaciones: { type: string, example: "Falta señalización interna." }
+
+    Documento:
+      type: object
+      properties:
+        id_documento: { type: integer, example: 11 }
+        id_licencia: { type: integer, example: 10 }
+        nombre_archivo: { type: string, example: "certificado.pdf" }
+        tipo_archivo: { type: string, example: "application/pdf" }
+        ruta_archivo: { type: string, example: "/uploads/2025/certificado.pdf" }
+
+    Notificacion:
+      type: object
+      properties:
+        id_notificacion: { type: integer, example: 4 }
+        id_usuario: { type: integer, example: 1 }
+        titulo: { type: string, example: "Inspección programada" }
+        mensaje: { type: string, example: "Tu inspección fue agendada para el 15/11/2025." }
+        leido: { type: boolean, example: false }
+
+    Contribucion:
+      type: object
+      properties:
+        id_contribucion: { type: integer, example: 12 }
+        id_usuario: { type: integer, example: 2 }
+        titulo: { type: string, example: "Mejoras en alumbrado" }
+        descripcion: { type: string, example: "Solicito más luminarias en la Av. Grau." }
+        categoria: { type: string, example: "Infraestructura" }
+
+    Prediccion:
+      type: object
+      properties:
+        id_prediccion: { type: integer, example: 7 }
+        id_licencia: { type: integer, example: 10 }
+        modelo_usado: { type: string, example: "modelo_riesgo_v2" }
+        probabilidad_riesgo: { type: number, example: 0.78 }
+        clasificacion: { type: string, example: "Alto" }
+
+security:
+  - BearerAuth: []
+
+paths:
+
+  /usuarios/login:
+    post:
+      summary: Iniciar sesión
+      description: Autentica al usuario y devuelve un token JWT válido.
+      tags: [Usuarios]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                correo: { type: string, example: "admin@municipalidad.gob.pe" }
+                contrasena: { type: string, example: "123456" }
+      responses:
+        '200':
+          description: Inicio de sesión exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exito: { type: boolean }
+                  token: { type: string }
+
+  /licencias:
+    get:
+      summary: Listar licencias
+      tags: [Licencias]
+      security: [ { BearerAuth: [] } ]
+      responses:
+        '200':
+          description: Lista de licencias
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Licencia' }
+
+    post:
+      summary: Crear licencia
+      tags: [Licencias]
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tipo_licencia: { type: string, example: "Comercio" }
+                descripcion: { type: string, example: "Solicitud de licencia para local de abarrotes" }
+      responses:
+        '201':
+          description: Licencia creada exitosamente
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Licencia' }
+
+  /inspecciones:
+    get:
+      summary: Listar inspecciones
+      tags: [Inspecciones]
+      security: [ { BearerAuth: [] } ]
+      responses:
+        '200':
+          description: Lista de inspecciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Inspeccion' }
+
+    post:
+      summary: Crear nueva inspección
+      tags: [Inspecciones]
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_licencia: { type: integer, example: 10 }
+                id_inspector: { type: integer, example: 2 }
+                fecha_inspeccion: { type: string, example: "2025-03-10" }
+                observaciones: { type: string, example: "Primera visita técnica" }
+      responses:
+        '201':
+          description: Inspección creada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Inspeccion' }
+
+  /documentos:
+    post:
+      summary: Subir documento
+      tags: [Documentos]
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Documento'
+      responses:
+        '201':
+          description: Documento guardado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Documento' }
+
+    get:
+      summary: Listar documentos por licencia
+      tags: [Documentos]
+      parameters:
+        - name: id_licencia
+          in: query
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Documentos relacionados
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Documento' }
+
+  /notificaciones:
+    get:
+      summary: Listar notificaciones del usuario autenticado
+      tags: [Notificaciones]
+      security: [ { BearerAuth: [] } ]
+      responses:
+        '200':
+          description: Lista de notificaciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Notificacion' }
+
+  /contribuciones:
+    post:
+      summary: Enviar contribución
+      tags: [Contribuciones]
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contribucion'
+      responses:
+        '201':
+          description: Contribución creada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Contribucion' }
+
+    get:
+      summary: Listar contribuciones (solo admin)

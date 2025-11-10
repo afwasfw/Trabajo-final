@@ -1,0 +1,37 @@
+{
+  "name": "municipalidad-backend",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --watch src --exec node src/servidor.js",
+    "docs": "node src/servidor.js",
+    "start": "node src/servidor.js",
+    "migrar": "knex migrate:latest --knexfile knexfile.cjs",
+    "revertir": "knex migrate:rollback --knexfile knexfile.cjs",
+    "sembrar": "knex seed:run --knexfile knexfile.cjs",
+    "test": "jest --runInBand"
+  },
+  "dependencies": {
+    "@scalar/api-reference": "^1.39.1",
+    "@scalar/express-api-reference": "^0.8.23",
+    "axios": "^1.13.2",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^5.0.0",
+    "express-rate-limit": "^7.0.0",
+    "firebase-admin": "^13.6.0",
+    "helmet": "^7.0.0",
+    "joi": "^17.8.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "mysql2": "^3.6.5",
+    "nodemailer": "^7.0.10",
+    "pino": "^9.3.0",
+    "pino-pretty": "^13.1.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "supertest": "^6.3.2"
+  }
+}
