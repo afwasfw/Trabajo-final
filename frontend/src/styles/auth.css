@@ -1,0 +1,38 @@
+/* Estilo para el contenedor principal de autenticación */
+.auth-container {
+  /* Capa oscura semitransparente sobre la imagen para mejorar la legibilidad del texto */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/yauyos-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2rem 0;
+}
+
+/* Estilo para la tarjeta del formulario con transiciones */
+.auth-card {
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Efecto al pasar el ratón sobre la tarjeta */
+.auth-card:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25) !important;
+  transform: translateY(-5px);
+}
+
+/* Estilo para la capa de carga */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: 0.75rem; /* Mismo borde que la tarjeta */
+  flex-direction: column;
+  color: #333;
+  font-weight: 500;
+}

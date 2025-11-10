@@ -3,11 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import apiClient from '../api/axios';
 import Swal from 'sweetalert2';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-
-const pageStyle = {
-  background: 'linear-gradient(to right, #ece9e6, #ffffff)',
-  padding: '2rem 0'
-};
+import '../styles/Auth.css'; // 1. Importar los nuevos estilos
 
 const RegistroPage = () => {
   const [formData, setFormData] = useState({
@@ -70,7 +66,6 @@ const RegistroPage = () => {
       return;
     }
     if (!executeRecaptcha) {
-      console.log('El script de reCAPTCHA aún no se ha cargado.');
       Swal.fire({ icon: 'error', title: 'Error de reCAPTCHA', text: 'No se pudo cargar el script de verificación. Por favor, recargue la página.' });
       return;
     }
@@ -96,8 +91,21 @@ const RegistroPage = () => {
   const textosFortaleza = ['Muy Débil', 'Media', 'Buena', 'Fuerte'];
 
   return (
-    <div className="d-flex align-items-center justify-content-center min-vh-100" style={pageStyle}>
-      <div className="card shadow-lg border-0 rounded-3" style={{ width: '100%', maxWidth: '700px' }}>
+    // 2. Aplicar la clase para la imagen de fondo
+    <div className="d-flex align-items-center justify-content-center min-vh-100 auth-container">
+      {/* 3. Aplicar la clase para el efecto de transición y añadir position-relative */}
+      <div className="card shadow-lg border-0 rounded-3 auth-card position-relative" style={{ width: '100%', maxWidth: '700px' }}>
+        
+        {/* 4. Añadir el overlay de carga */}
+        {loading && (
+          <div className="loading-overlay">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </div>
+            <p className="mt-3 mb-0">Creando cuenta...</p>
+          </div>
+        )}
+
         <div className="card-body p-4 p-md-5">
           <div className="text-center mb-4">
             <i className="bi bi-person-plus-fill display-4 text-primary"></i>
@@ -105,6 +113,7 @@ const RegistroPage = () => {
             <p className="text-muted">Completa tus datos para acceder al portal.</p>
           </div>
           <form onSubmit={handleSubmit} noValidate>
+            {/* ... (el resto del formulario no cambia) ... */}
             <div className="form-floating mb-3">
               <input type="text" className={`form-control ${errores.nombre ? 'is-invalid' : ''}`} id="nombre" name="nombre" placeholder="Nombre Completo" onChange={handleChange} onBlur={handleBlur} required />
               <label htmlFor="nombre">Nombre Completo</label>
@@ -157,7 +166,7 @@ const RegistroPage = () => {
             )}
             <div className="d-grid mt-4">
               <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
-                {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
+                Crear Cuenta
               </button>
             </div>
             <div className="text-center mt-4">
