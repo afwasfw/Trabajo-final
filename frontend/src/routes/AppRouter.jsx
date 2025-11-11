@@ -7,6 +7,7 @@ import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import TramitesPage from '../pages/TramitesPage';
 import NuevoTramitePage from '../pages/NuevoTramitePage';
+import SolicitudDetallePage from '../pages/SolicitudDetallePage'; // 1. Importar la nueva página
 import RegistroPage from '../pages/RegistroPage'; // <-- 1. Importa la nueva página
 
 const ProtectedRoute = ({ children }) => {
@@ -32,6 +33,14 @@ const AppRouter = () => {
           } 
         />
         <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
           path="/tramites" 
           element={
             <ProtectedRoute>
@@ -47,10 +56,18 @@ const AppRouter = () => {
             </ProtectedRoute>
           } 
         />
+        {/* 2. Añadir la nueva ruta para el detalle de la solicitud */}
+        <Route 
+          path="/solicitudes/:id" 
+          element={
+            <ProtectedRoute>
+              <SolicitudDetallePage />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </Router>
   );
 };
 
 export default AppRouter;
-

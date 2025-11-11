@@ -1,0 +1,124 @@
+/* =================================================================
+   PALETA DE COLORES Y VARIABLES GLOBALES
+   ================================================================= */
+:root {
+  --color-primary: #0056b3;       /* Un azul más profundo y corporativo */
+  --color-primary-dark: #004494;  /* Una versión más oscura para hovers */
+  --color-secondary: #5a6268;    /* Gris secundario */
+  --color-success: #218838;      /* Verde para éxito */
+  --color-info: #117a8b;         /* Cian/turquesa para información */
+  --color-warning: #ffc107;      /* Amarillo para advertencias */
+  --color-danger: #c82333;       /* Rojo para errores */
+  
+  --color-background: #f0f2f5;   /* Fondo principal gris azulado muy claro */
+  --color-surface: #ffffff;      /* Blanco para la superficie de las tarjetas */
+  --color-text: #212529;         /* Texto principal oscuro */
+  --color-text-muted: #6c757d;   /* Texto secundario gris */
+
+  --shadow-sm: 0 .125rem .25rem rgba(0, 0, 0, .075);
+  --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, .175);
+  --border-radius: 0.75rem; /* Bordes un poco más redondeados */
+}
+
+/* =================================================================
+   ESTILOS GENERALES (BODY, TIPOGRAFÍA)
+   ================================================================= */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.lead {
+  font-weight: 300;
+  color: var(--color-text-muted);
+}
+
+/* =================================================================
+   MEJORAS A COMPONENTES DE BOOTSTRAP
+   ================================================================= */
+
+.card {
+  border: 1px solid #e9ecef;
+  border-radius: var(--border-radius);
+  background-color: var(--color-surface);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+
+.btn {
+  border-radius: 50px; /* Botones más redondeados */
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.badge {
+  padding: 0.5em 0.8em;
+  font-size: 0.8rem;
+  border-radius: 50px;
+}
+
+.table-responsive {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+.table thead {
+  background-color: #e9ecef;
+}
+
+/* =================================================================
+   CLASES PERSONALIZADAS
+   ================================================================= */
+
+.card-hover {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.card-hover:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.auth-container {
+  min-height: 100vh;
+  /* CORRECCIÓN: Fondo con la imagen JPG y el gradiente azul sutil */
+  background: linear-gradient(135deg, rgba(0, 86, 179, 0.1), rgba(0, 86, 179, 0)), url('/images/yauyos-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.auth-card {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dashboard-background {
+ min-height: 100vh;
+  /* CORRECCIÓN: Fondo con el patrón SVG y un gradiente blanco sutil para legibilidad */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3)), url('/background.svg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}

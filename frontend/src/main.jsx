@@ -5,6 +5,7 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 // import { GoogleOAuthProvider } from '@react-oauth/google'; // <-- 1. ELIMINAR ESTA LÍNEA
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import './styles/App.css'; // <-- ¡AQUÍ! Importamos nuestros estilos personalizados.
 
 const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 // const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID; // <-- 2. ELIMINAR ESTA LÍNEA

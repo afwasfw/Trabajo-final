@@ -1,35 +1,32 @@
+// src/controladores/documentos.controlador.js
+import path from 'path';
+import fs from 'fs';
 import * as servicio from '../servicios/documentos.servicio.js';
-import { respuestaExitosa } from '../utilidades/respuestas.js';
 
-export async function subirDocumento(req, res, siguiente) {
+/**
+ * Controlador para descargar un archivo de forma segura.
+ */
+export async function descargarDocumento(req, res, siguiente) {
   try {
-    const datos = req.datosValidados;
-    const idUsuario = req.usuario?.id_usuario || null;
-    const creado = await servicio.subirDocumento(datos, idUsuario);
-    respuestaExitosa(res, creado, 201);
-  } catch (error) {
-    siguiente(error);
-  }
-}
+    const idDocumento = Number(req.params.id);
+    const { id_usuario, rol } = req.usuario; // Datos del token JWT
 
-export async function listarDocumentos(req, res, siguiente) {
-  try {
-    const idLic = Number(req.query.id_licencia);
-    if (!idLic) throw { estado: 400, mensaje: 'id_licencia requerido' };
-    const docs = await servicio.listarDocumentosPorLicencia(idLic);
-    respuestaExitosa(res, docs);
-  } catch (error) {
-    siguiente(error);
-  }
-}
+    const documento = await servicio.obtenerDocumentoSeguro(idDocumento, id_usuario, rol);
 
-export async function obtenerDocumento(req, res, siguiente) {
-  try {
-    const id = Number(req.params.id);
-    if (!id) throw { estado: 400, mensaje: 'Id inválido' };
-    const doc = await servicio.obtenerDocumentoPorId(id);
-    if (!doc) return res.status(404).json({ exito: false, mensaje: 'Documento no encontrado' });
-    respuestaExitosa(res, doc);
+    if (!documento) {
+      return res.status(404).json({ exito: false, mensaje: 'Documento no encontrado o no tienes permiso para acceder a él.' });
+    }
+
+    const rutaAbsoluta = path.resolve(documento.url_archivo);
+
+    // Verificamos que el archivo exista físicamente antes de intentar enviarlo
+    if (!fs.existsSync(rutaAbsoluta)) {
+      return res.status(404).json({ exito: false, mensaje: 'El archivo físico no se encuentra en el servidor.' });
+    }
+
+    // res.download() se encarga de establecer las cabeceras correctas para la descarga
+    res.download(rutaAbsoluta, documento.nombre_doc);
+
   } catch (error) {
     siguiente(error);
   }

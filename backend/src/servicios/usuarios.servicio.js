@@ -22,7 +22,8 @@ export async function crearUsuario(datos) {
       contrasena: hash,
       telefono: datos.telefono,
       direccion: datos.direccion,
-      id_rol: await obtenerIdRol(datos.rol_nombre, trx)
+      // Asignamos el rol de 'Ciudadano' por defecto
+      id_rol: await obtenerIdRol('Ciudadano', trx)
     });
 
     const nuevoUsuario = await trx('usuarios')
@@ -66,9 +67,8 @@ export async function iniciarSesion({ correo, contrasena }) {
   return { token, usuario: limpiarUsuario(usuario) };
 }
 
-// --- INICIO: NUEVA FUNCIÓN PARA MANEJAR LOGIN SOCIAL ---
+// Manejar login social (Google)
 export async function manejarLoginSocial({ correo, nombre, foto }) {
-  // 1. Buscar si el usuario ya existe en nuestra base de datos
   let usuario = await bd('usuarios')
     .join('roles', 'usuarios.id_rol', 'roles.id_rol')
     .select('usuarios.*', 'roles.nombre_rol as rol_nombre')
@@ -76,14 +76,12 @@ export async function manejarLoginSocial({ correo, nombre, foto }) {
     .first();
 
   if (!usuario) {
-    // 2. Si no existe, lo creamos
     registro.info({ msg: 'Creando nuevo usuario desde login social', correo });
 
     const [idNuevoUsuario] = await bd('usuarios').insert({
       nombre_completo: nombre,
       correo: correo,
       id_rol: 3, // Rol de Ciudadano por defecto
-      // La contraseña, dni, telefono, etc., quedan como NULL
     });
 
     usuario = await bd('usuarios')
@@ -93,14 +91,13 @@ export async function manejarLoginSocial({ correo, nombre, foto }) {
       .first();
   }
 
-  // 3. Generar nuestro propio token JWT para el usuario (existente o nuevo)
   const token = jwt.sign(
     {
       id_usuario: usuario.id_usuario,
       rol_nombre: usuario.rol_nombre,
       correo: usuario.correo,
       nombre: usuario.nombre_completo,
-      foto: foto // Podemos incluir la foto de perfil en el token
+      foto: foto
     },
     entorno.jwt.secreto,
     { expiresIn: entorno.jwt.expiracion }
@@ -109,7 +106,6 @@ export async function manejarLoginSocial({ correo, nombre, foto }) {
   registro.info({ msg: 'Usuario inició sesión vía Google', id: usuario.id_usuario });
   return { token, usuario: limpiarUsuario(usuario) };
 }
-// --- FIN: NUEVA FUNCIÓN ---
 
 // Listar usuarios
 export async function listarUsuarios(limit = 50, offset = 0) {
@@ -121,7 +117,7 @@ export async function listarUsuarios(limit = 50, offset = 0) {
       'usuarios.correo',
       'roles.nombre_rol as rol',
       'usuarios.activo',
-      'usuarios.fecha_creacion'
+      'usuarios.fecha_registro'
     )
     .orderBy('usuarios.id_usuario')
     .limit(Number(limit))

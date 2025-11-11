@@ -1,26 +1,27 @@
+// src/servicios/documentos.servicio.js
 import bd from '../configuracion/baseDatos.js';
 
-export async function subirDocumento(datos, idUsuario = null) {
-  const creado = await bd.transaction(async (trx) => {
-    if (idUsuario) await trx.raw('SET LOCAL app.user_id = ?', [idUsuario]);
-    const [doc] = await trx('documentos')
-      .insert({
-        id_licencia: datos.id_licencia || null,
-        id_inspeccion: datos.id_inspeccion || null,
-        nombre_archivo: datos.nombre_archivo,
-        tipo_archivo: datos.tipo_archivo,
-        ruta_archivo: datos.ruta_archivo
-      })
-      .returning('*');
-    return doc;
-  });
-  return creado;
-}
+/**
+ * Obtiene la información de un documento de forma segura,
+ * verificando que pertenezca al usuario o que el usuario sea administrador.
+ * @param {number} idDocumento - El ID del documento a descargar.
+ * @param {number} idUsuario - El ID del usuario que realiza la petición.
+ * @param {string} rolUsuario - El rol del usuario que realiza la petición.
+ * @returns {Promise<object|null>} El objeto del documento si se encuentra y hay permiso, o null.
+ */
+export async function obtenerDocumentoSeguro(idDocumento, idUsuario, rolUsuario) {
+  const query = bd('documentos as d')
+    .join('solicitudes as s', 'd.id_solicitud', 's.id_solicitud')
+    .where('d.id_documento', idDocumento)
+    .select('d.url_archivo', 'd.nombre_doc')
+    .first();
 
-export async function listarDocumentosPorLicencia(idLicencia) {
-  return bd('documentos').where({ id_licencia: idLicencia }).orderBy('fecha_subida','desc');
-}
+  // Si el usuario no es Administrador, añadimos la condición de que sea el dueño de la solicitud.
+  if (rolUsuario !== 'Administrador') {
+    query.andWhere('s.id_usuario', idUsuario);
+  }
 
-export async function obtenerDocumentoPorId(id) {
-  return bd('documentos').where({ id_documento: id }).first();
+  const documento = await query;
+
+  return documento;
 }
