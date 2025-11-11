@@ -22,10 +22,10 @@ const LoginPage = () => {
       return;
     }
     setLoading(true);
-    const exito = await login(correo, contrasena);
+    const rutaDestino = await login(correo, contrasena);
     setLoading(false);
-    if (exito) navigate('/');
-    else Swal.fire({ icon: 'error', title: 'Error de Autenticación', text: 'Credenciales inválidas.' });
+    if (rutaDestino) navigate(rutaDestino);
+    else Swal.fire({ icon: 'error', title: 'Error de Autenticación', text: 'Credenciales inválidas o problema del servidor.' });
   };
 
   const handleGoogleLogin = async () => {
@@ -33,9 +33,9 @@ const LoginPage = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
-      const exito = await loginWithGoogle(idToken);
-      if (exito) {
-        navigate('/');
+      const rutaDestino = await loginWithGoogle(idToken);
+      if (rutaDestino) {
+        navigate(rutaDestino);
       } else {
         Swal.fire({ icon: 'error', title: 'Error de Servidor', text: 'No se pudo completar el inicio de sesión con Google.' });
       }

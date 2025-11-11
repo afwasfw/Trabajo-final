@@ -7,8 +7,10 @@ import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import TramitesPage from '../pages/TramitesPage';
 import NuevoTramitePage from '../pages/NuevoTramitePage';
-import SolicitudDetallePage from '../pages/SolicitudDetallePage'; // 1. Importar la nueva página
-import RegistroPage from '../pages/RegistroPage'; // <-- 1. Importa la nueva página
+import SolicitudDetallePage from '../pages/SolicitudDetallePage';
+import RegistroPage from '../pages/RegistroPage';
+import AdminDashboardPage from '../pages/AdminDashboardPage'; // 1. Importar la página de admin
+import AdminRoute from './AdminRoute'; // CORRECCIÓN: La ruta correcta es desde la misma carpeta 'routes'
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
@@ -63,6 +65,16 @@ const AppRouter = () => {
             <ProtectedRoute>
               <SolicitudDetallePage />
             </ProtectedRoute>
+          } 
+        />
+
+        {/* Ruta para el Panel de Administrador */}
+        <Route 
+          path="/admin" 
+          element={
+            <AdminRoute>
+              <AdminDashboardPage />
+            </AdminRoute>
           } 
         />
       </Routes>

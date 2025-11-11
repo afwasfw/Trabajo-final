@@ -32,12 +32,12 @@ export const AuthProvider = ({ children }) => {
         setToken(responseToken);
         const decodedUser = jwtDecode(responseToken);
         setUsuario(decodedUser);
-        return true;
+        return decodedUser.rol_nombre === 'Administrador' ? '/admin' : '/dashboard'; // Devuelve la ruta
       }
-      return false;
+      return null; // Indica fallo
     } catch (error) {
       console.error('Error en el inicio de sesión:', error.response?.data?.mensaje || error.message);
-      return false;
+      return null; // Indica fallo
     }
   };
 
@@ -54,12 +54,12 @@ export const AuthProvider = ({ children }) => {
         setToken(responseToken);
         const decodedUser = jwtDecode(responseToken);
         setUsuario(decodedUser);
-        return true;
+        return decodedUser.rol_nombre === 'Administrador' ? '/admin' : '/dashboard'; // Devuelve la ruta
       }
-      return false;
+      return null; // Indica fallo
     } catch (error) {
       console.error('Error en el inicio de sesión con Google (backend):', error.response?.data?.mensaje || error.message);
-      return false;
+      return null; // Indica fallo
     }
   };
   // --- FIN: NUEVA FUNCIÓN ---

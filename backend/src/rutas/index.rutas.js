@@ -7,6 +7,7 @@ import rutasDocumentos from './documentos.rutas.js';
 import rutasNotificaciones from './notificaciones.rutas.js';
 import rutasHistorial from './historial.rutas.js';
 import rutasPredicciones from './predicciones.rutas.js';
+import rutasAdmin from './admin.rutas.js'; // 1. Importar las nuevas rutas de admin
 import rutasContribuciones from './contribuciones.rutas.js';
 // --- INICIO: NUEVAS RUTAS ---
 import rutasCatalogo from './catalogo.rutas.js';
@@ -22,6 +23,7 @@ enrutador.use('/documentos', rutasDocumentos);
 enrutador.use('/notificaciones', rutasNotificaciones);
 enrutador.use('/historial', rutasHistorial);
 enrutador.use('/predicciones', rutasPredicciones);
+enrutador.use('/admin', rutasAdmin); // 2. Registrar las rutas de admin
 enrutador.use('/contribuciones', rutasContribuciones);
 
 // --- INICIO: REGISTRO DE NUEVAS RUTAS ---
